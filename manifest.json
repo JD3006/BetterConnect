@@ -9,6 +9,12 @@
         "js": ["inject.js"],
         "run_at": "document_start"
       }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["images/*.png"],
+            "matches": ["*://connect.det.wa.edu.au/*"]
+        }
     ]
   }
   
