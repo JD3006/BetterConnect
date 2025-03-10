@@ -53,32 +53,97 @@ function getExtensionImageUrl(imgPath) {
     return runtime.getURL(imgPath);
 }
 
+function waitForAnyElementById(ids, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+        const startTime = Date.now();
+
+        function checkElements() {
+            for (const id of ids) {
+                const element = document.getElementById(id);
+                if (element) return resolve(element);
+            }
+            return null;
+        }
+
+        // Check immediately if an element is already present
+        const foundElement = checkElements();
+        if (foundElement) return;
+
+        // Ensure `document.body` is available before observing
+        function waitForBody(callback) {
+            if (document.body) {
+                callback();
+            } else {
+                new MutationObserver((_, observer) => {
+                    if (document.body) {
+                        observer.disconnect();
+                        callback();
+                    }
+                }).observe(document.documentElement, { childList: true });
+            }
+        }
+
+        waitForBody(() => {
+            const observer = new MutationObserver(() => {
+                const found = checkElements();
+                if (found) {
+                    observer.disconnect();
+                    resolve(found);
+                }
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // Polling fallback in case MutationObserver fails
+            const interval = setInterval(() => {
+                const found = checkElements();
+                if (found) {
+                    clearInterval(interval);
+                    observer.disconnect();
+                    resolve(found);
+                } else if (Date.now() - startTime >= timeout) {
+                    clearInterval(interval);
+                    observer.disconnect();
+                    reject(new Error("No element found within timeout"));
+                }
+            }, 100);
+        });
+    });
+}
+
 function addCompassIcon() {
     // Example usage:
-    waitForElement(() =>
-        document.getElementById("v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_240")
-            .children[0].children[1].children[0].children[0]
-    )
-    .then(element => {
-        console.log("Element loaded:", element);
-
-        const emailIcon = element.children[7];
-        
-        let compassIcon = emailIcon.cloneNode(true);
-
-        compassIcon.children[0].href = "https://ellenbrooksc-wa.compass.education/";
-        insertElementAt(element, compassIcon, 7);
-        compassIcon.children[0].children[0].remove();
-
-        let compassLogo = createImage(getExtensionImageUrl('images/compass.png'), alt="Compass");
-        compassLogo.style = "padding: 4px"
-
-        compassIcon.children[0].appendChild(compassLogo);
+    waitForAnyElementById(["v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_240", "v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_216","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_315","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_228","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_215"]).then(parentElement => {
+        waitForElement(() =>
+            parentElement
+                .children[0].children[1].children[0].children[0]
+        )
+        .then(element => {
+            console.log("Element loaded:", element);
+    
+            const emailIcon = element.children[7];
+            
+            let compassIcon = emailIcon.cloneNode(true);
+    
+            compassIcon.children[0].href = "https://ellenbrooksc-wa.compass.education/";
+            insertElementAt(element, compassIcon, 7);
+            compassIcon.children[0].children[0].remove();
+    
+            let compassLogo = createImage(getExtensionImageUrl('images/compass.png'), alt="Compass");
+            compassLogo.style = "padding: 4px"
+    
+            compassIcon.children[0].appendChild(compassLogo);
+    
+        })
+        .catch(err => {
+            console.error(err);
+        });
 
     })
     .catch(err => {
         console.error(err);
     });
+    
 }
 
 addCompassIcon();
