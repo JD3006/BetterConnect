@@ -12,7 +12,7 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["images/*.png"],
+            "resources": ["images/*.png", "*.js"],
             "matches": ["*://connect.det.wa.edu.au/*"]
         }
     ]

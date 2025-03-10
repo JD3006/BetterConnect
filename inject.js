@@ -1,3 +1,5 @@
+//rip escraft
+
 function waitForElement(getElementFn, timeout = 5000) {
     return new Promise((resolve, reject) => {
       const intervalTime = 100;
@@ -111,6 +113,7 @@ function waitForAnyElementById(ids, timeout = 5000) {
     });
 }
 
+
 function addCompassIcon() {
     // Example usage:
     waitForAnyElementById(["v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_240", "v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_216","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_315","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_228","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_215"]).then(parentElement => {
@@ -146,4 +149,83 @@ function addCompassIcon() {
     
 }
 
+function addThemeTab() {
+    // Example usage:
+    waitForAnyElementById(["v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_240", "v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_216","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_315","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_228","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_215"]).then(parentElement => {
+        waitForElement(() =>
+            parentElement
+                .children[0].children[1].children[0].children[0].children[2].children[0]
+        )
+        .then(element => {
+            console.log("Element loaded:", element);
+    
+            const tabIcon = element.children[0];
+
+            
+            let themeTab = tabIcon.cloneNode(true);
+    
+            themeTab.children[0].children[0].children[0].textContent = "Themes"
+            insertElementAt(element, themeTab, 3);
+    
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    })
+    .catch(err => {
+        console.error(err);
+    });
+    
+}
+
 addCompassIcon();
+addThemeTab();
+
+` A~!`
+
+
+
+
+//Luca's section <3
+
+
+
+
+
+function changeHoverEffect(button, hoverColor) {
+    //todo implement code
+}
+
+
+
+function setTopBarColour(backgroundColor, hoverColor) {
+    waitForAnyElementById(["v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_240", "v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_216","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_315","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_228","v-headerportlet_WAR_connectrvportlet_INSTANCE_xyz1_LAYOUT_215"]).then(parentElement => {
+        waitForElement(() =>
+            parentElement
+                .children[0].children[1].children[0].children[0]
+        )
+        .then(element => {
+            console.log("Element loaded:", element);
+    
+            element.style = "background-color: " + backgroundColor;
+            console.log(element.children[element.children.length-2].children[0]);
+            element.children[element.children.length-2].children[0].style = "background-color: " + backgroundColor;
+            //changeHoverEffect(element.children[element.children.length-2].children[0], hoverColor, backgroundColor);
+            
+        })
+        .catch(err => {
+            console.error(err);
+        });
+
+    })
+    .catch(err => {
+        console.error(err);
+    });
+}
+
+
+
+
+
+setTopBarColour("#000000")
