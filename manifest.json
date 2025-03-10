@@ -1,0 +1,14 @@
+{
+    "manifest_version": 3,
+    "name": "Better Connect",
+    "version": "1.0",
+    "description": "Improves the UX on Connect DET.",
+    "content_scripts": [
+      {
+        "matches": ["*://connect.det.wa.edu.au/*"],
+        "js": ["inject.js"],
+        "run_at": "document_start"
+      }
+    ]
+  }
+  
